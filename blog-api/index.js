@@ -5,7 +5,7 @@ const fileUpload = require('express-fileupload');
 const { initRoutes } = require('./routes');
 const morgan = require('morgan');
 
-require('dotenv').config();
+require('dotenv').config({ path: './env' });
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(express.static('public'));
 app.use(
   fileUpload({
     createParentPath: true,
-  }),
+  })
 );
 app.use(express.json());
 app.use(morgan('dev'));
