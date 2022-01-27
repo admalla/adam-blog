@@ -1,0 +1,44 @@
+.wrapper {
+  margin-right: 80px;
+  width: 100wh;
+  transition: all ease 1s;
+}
+
+.wrapper_small {
+  margin-right: 250px;
+  transition: all ease 1s;
+}
+
+.profile {
+  text-align: center;
+  align-items: center;
+  margin-top: 50px;
+  // max-width: 1200px;
+}
+
+.user_name {
+  display: block;
+}
+
+.art_profile {
+  display: inline-block;
+  margin-top: 30px;
+}
+
+.profile_header {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 50px 20px 20px;
+}
+
+.profile_header div:first-child {
+  text-transform: uppercase;
+}
+
+
+.profile_icons {
+  svg {
+    margin-left: 15px;
+  }
+}
+

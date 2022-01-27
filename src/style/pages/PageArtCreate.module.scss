@@ -1,0 +1,50 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.forma {
+  span {
+    display: flex;
+  }
+    svg {
+      margin-right: 10px;
+    }
+}
+
+.edit_article {
+  flex: 1;
+  padding: 25px;
+  max-width: 700px;
+}
+
+.article {
+  flex: 1;
+  padding: 25px 50px 25px 25px;
+  transition: all ease 1s;
+
+  form {
+    margin-bottom: 20px;
+  }
+
+  form div:first-child {
+    align-items: flex-end;
+    justify-content: right;
+  }
+}
+
+.article_small {
+  margin-right: 170px;
+  flex: 1;
+  padding: 25px 50px 25px 25px;
+  transition: all ease 1s;
+
+  form {
+    margin-bottom: 20px;
+  }
+
+  form div:first-child {
+    align-items: flex-end;
+    justify-content: right;
+  }
+}
