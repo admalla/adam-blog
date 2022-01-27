@@ -38,10 +38,10 @@
   },
   "scripts": {
     "start-client": "react-scripts start",
-    "build": "react-scripts build && (cd blog-api && yarn install)",
+    "build": "react-scripts build && (cd blog-api && npm install)",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start": "cd blog-api && yarn start"
+    "start": "cd blog-api && npm start"
   },
   "eslintConfig": {
     "extends": [
