@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const { initRoutes } = require('./routes');
 const morgan = require('morgan');
+const path = require('path');
 
 require('dotenv').config({ path: './env' });
 
@@ -20,7 +21,7 @@ app.use(
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/static', express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'my-blog', 'blog-api', 'index.html')));
 
 initRoutes(app);
 
