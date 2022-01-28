@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(express.static('my-blog/blog-api'));
 app.use(
   fileUpload({
     createParentPath: true,
@@ -20,6 +20,8 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan('dev'));
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 initRoutes(app);
 
