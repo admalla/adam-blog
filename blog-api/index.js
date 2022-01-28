@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use('/static', express.static(__dirname + '/public'));
+app.use('/static', express.static(__dirname + '../public', 'index.html'));
 app.use(
   fileUpload({
     createParentPath: true,
