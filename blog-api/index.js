@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('client/build'));
+app.use('/static', express.static(__dirname + '/public'));
 app.use(
   fileUpload({
     createParentPath: true,
@@ -20,10 +20,6 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan('dev'));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'index.html'));
-});
 
 initRoutes(app);
 
