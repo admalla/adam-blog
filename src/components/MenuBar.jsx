@@ -37,12 +37,12 @@ export function MenuBar({ modalOpen, valueUser }) {
   const handleClickCreatArt = () => {
     // eslint-disable-next-line no-lone-blocks
     {
-      token ? navigate('/auth/addarticle') : navigate('/');
+      token ? navigate('/post') : navigate('/');
     }
   };
 
   const handleClickProfile = () => {
-    navigate('/profile');
+    navigate(`/profile/${item.user._id}`);
   };
 
   return (

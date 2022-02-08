@@ -6,13 +6,13 @@ const { initRoutes } = require('./routes');
 const morgan = require('morgan');
 const path = require('path');
 
-require('dotenv').config({ path: './env' });
+require('dotenv').config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('my-blog/blog-api'));
+app.use(express.static('public'));
 app.use(
   fileUpload({
     createParentPath: true,

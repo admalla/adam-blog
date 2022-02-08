@@ -9,6 +9,7 @@ export function modalReducer(state = initialState, action) {
       return {
         ...state,
         isOpened: false,
+        isRegistered: false,
       };
 
     case 'OPEN_MODAL':

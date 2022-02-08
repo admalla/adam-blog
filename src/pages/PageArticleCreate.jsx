@@ -9,7 +9,7 @@ import 'easymde/dist/easymde.min.css';
 import { instance } from '../config/axios';
 import { items_User } from '../redux/mainPage/action';
 
-export function PageArticleCreate({ handleClickLogOut, modalOpen, valueArt }) {
+export function PageArticleCreate({ artSelected, handleClickLogOut, modalOpen, valueArt }) {
   const dispatch = useDispatch();
   const flag = useSelector((state) => state.menu.flag);
   const text = useSelector((state) => state.article.valueArt);
@@ -21,16 +21,27 @@ export function PageArticleCreate({ handleClickLogOut, modalOpen, valueArt }) {
 
   const handleFormArticle = async (e) => {
     e.preventDefault();
-    valueArt('');
     if (sendPostEdited) {
-      await instance.patch(`/posts/${idPostEdit}`, { title, text });
+      await instance.patch(`/posts/${idPostEdit}`, { title, text, description: 'article' });
       dispatch({ type: 'SENT_POST_EDIT' });
       const response = await instance.get('/posts?limit=3').then(({ data }) => data);
       dispatch(items_User({ items: response.items, total: response.total }));
       dispatch({ type: 'CLEAR_TITLE' });
+      valueArt('');
     } else {
-      await instance.post('/posts', { title, text, photoUrl, description: 'article' });
-      dispatch({ type: 'CLEAR_TITLE' });
+      await instance
+        .post('/posts', { title, text, photoUrl, description: 'article' })
+        .then(() => {
+          dispatch({ type: 'CLEAR_TITLE' });
+          valueArt('');
+        })
+        .catch(() => {
+          if (title || text) {
+            alert('Заполните все поля!');
+          } else {
+            alert('Извените, на стороне сервера произошла ошибка!');
+          }
+        });
       const res = await instance.get('/posts?limit=3').then(({ data }) => data);
       dispatch(items_User({ items: res.items, total: res.total }));
     }
@@ -94,7 +105,7 @@ export function PageArticleCreate({ handleClickLogOut, modalOpen, valueArt }) {
       </div>
       <div className={flag ? styles.article_small : styles.article}>
         <Inputs handleClickLogOut={handleClickLogOut} modalOpen={modalOpen} />
-        <Article />
+        <Article artSelected={artSelected} />
       </div>
     </div>
   );

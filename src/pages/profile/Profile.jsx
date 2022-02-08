@@ -4,7 +4,7 @@ import styles from '../../style/pages/profile.module.scss';
 import { HeaderProfile } from './HeaderProfile';
 import { useSelector } from 'react-redux';
 
-export function Profile({ getArticle, handleClickLogOut }) {
+export function Profile({ handleClickLogOut }) {
   const flag = useSelector((state) => state.menu.flag);
 
   return (
@@ -13,7 +13,7 @@ export function Profile({ getArticle, handleClickLogOut }) {
       <div className={styles.profile}>
         <Username />
         <div className={styles.art_profile}>
-          <Article getArticle={getArticle} />
+          <Article />
         </div>
       </div>
     </div>

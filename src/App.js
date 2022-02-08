@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { MenuBar } from './components/MenuBar';
 import { Modal } from './components/Modal';
@@ -13,6 +13,7 @@ import { inputUserValue, modalClose, modalOpen, onToggle } from './redux/Modal/a
 
 function App() {
   const token = localStorage.getItem('token');
+  const items = useSelector((state) => state.menu.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,6 +45,14 @@ function App() {
     dispatch(modalOpen());
   };
 
+  const artSelected = (id) => {
+    const item = items.find((item) => item._id === id);
+    dispatch({
+      type: 'SELECTED',
+      payload: item,
+    });
+  };
+
   function handleClickLogOut() {
     if (token) {
       window.localStorage.clear();
@@ -65,27 +74,54 @@ function App() {
           path="/"
           element={
             <MainPage
+              artSelected={artSelected}
               setComment={setComment}
               modalOpen={modal_Open}
               handleClickLogOut={handleClickLogOut}
             />
           }
         />
+
         <Route
-          path="/profile"
-          element={<Profile handleClickLogOut={handleClickLogOut} valueUser={valueUser} />}
-        />
-        <Route
-          path="/auth/addarticle"
+          path="/post/:id"
           element={
-            <PageArticleCreate
-              handleClickLogOut={handleClickLogOut}
+            <MainPage
+              artSelected={artSelected}
+              setComment={setComment}
               modalOpen={modal_Open}
+              handleClickLogOut={handleClickLogOut}
               valueUser={valueUser}
-              valueArt={valueArt}
             />
           }
         />
+
+        <Route
+          path="/profile/:id"
+          element={<Profile handleClickLogOut={handleClickLogOut} valueUser={valueUser} />}
+        />
+        <Route
+          path="/post"
+          element={
+            <PageArticleCreate
+              artSelected={artSelected}
+              handleClickLogOut={handleClickLogOut}
+              modalOpen={modal_Open}
+              valueArt={valueArt}
+            />
+          }
+        >
+          <Route
+            path=":id/edit"
+            element={
+              <PageArticleCreate
+                artSelected={artSelected}
+                handleClickLogOut={handleClickLogOut}
+                modalOpen={modal_Open}
+                valueArt={valueArt}
+              />
+            }
+          />
+        </Route>
       </Routes>
       <Modal
         valueUser={valueUser}

@@ -52,9 +52,7 @@ export function Modal({ valueUser, pageUser, onToggle, modalClose, modalValue })
     <div className={`modal_wrapper ${isOpened ? 'open' : 'close'}`}>
       <div className="modal_body">
         <div className="reg">
-          <div>
-            <h2>Регистрация</h2>
-          </div>
+          <div>{isRegistered ? <h2>Регистрация</h2> : <h2>Вход в аккаунт</h2>}</div>
           <div className="modal_close" onClick={modalClose}>
             ✕
           </div>

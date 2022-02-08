@@ -2,39 +2,50 @@ import Inputs from '../components/material/SearchUser';
 import styles from '../style/pages/main.module.scss';
 import { Article } from '../components/Article';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
-import { getAllComments } from '../redux/comments/action';
+import { useEffect, useState } from 'react';
+import { getAllComments, selectComForEdit, setEditComment } from '../redux/comments/action';
 import logo from '../1489.gif';
 import { getDelComment } from '../redux/comments/action';
 import { instance } from '../config/axios';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import DragHandleIcon from '@mui/icons-material/DragHandle';
 import { ButtonAnime } from '../components/Animation';
 
-export default function MainPage({ setComment, handleClickLogOut, modalOpen }) {
+export default function MainPage({
+  valueUser,
+  artSelected,
+  setComment,
+  handleClickLogOut,
+  modalOpen,
+}) {
   const flag = useSelector((state) => state.menu.flag);
-  const items = useSelector((state) => state.menu.items);
+
   const artActiv = useSelector((state) => state.article.selected);
   const flagArt = useSelector((state) => state.article.flag);
   const comments = useSelector((state) => state.comments.items);
-  const name = useSelector((state) => state.menu.items).map((el) => el.user.fullName);
+  const name = useSelector((state) => state.menu.userName);
   const loading = useSelector((state) => state.comments.loading);
   const setLoadComment = useSelector((state) => state.comments.setLoadComment);
+  const token = window.localStorage.getItem('token');
+  const commentForEdit = useSelector((state) => state.comments.comForEdit);
+  const isEditComment = useSelector((state) => state.comments.isEditComment);
+  const loadComEdit = useSelector((state) => state.comments.loadComEdit);
 
-  console.log(flagArt);
-
+  console.log(isEditComment);
   const [text, setText] = useState('');
 
   const dispatch = useDispatch();
 
-  const artSelected = (id) => {
-    const item = items.find((item) => item._id === id);
-    dispatch({
-      type: 'SELECTED',
-      payload: item,
-    });
-  };
+  useEffect(() => {
+    async function authFunc() {
+      const res = await instance
+        .get('/auth/me')
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+        });
+      valueUser(res);
+    }
+    authFunc();
+  }, [valueUser]);
 
   const handleChangetext = (e) => {
     setText(e.target.value);
@@ -42,10 +53,15 @@ export default function MainPage({ setComment, handleClickLogOut, modalOpen }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const postId = artActiv._id;
-    setComment({ text, postId });
-    e.target.reset();
-    setText('');
+    if (isEditComment) {
+      const postId = artActiv._id;
+      setComment({ text, postId });
+      e.target.reset();
+      setText('');
+    } else {
+      dispatch(setEditComment(commentForEdit._id, text, commentForEdit.post));
+      setText('');
+    }
   };
 
   const getAllCommentsArticle = (id) => {
@@ -59,17 +75,30 @@ export default function MainPage({ setComment, handleClickLogOut, modalOpen }) {
     }
   };
 
-  const handleClickEditCom = async (postId, id) => {
-    const text = prompt('Измените текст');
-    await instance.patch(`/comments/${id}`, { text });
-    getAllCommentsArticle(postId);
+  const handleClickEditCom = (postId, id) => {
+    dispatch(selectComForEdit(id));
+  };
+
+  useEffect(() => {
+    setText(commentForEdit.text);
+  }, [commentForEdit.text]);
+
+  const funcLoad = (id, text) => {
+    if (id === commentForEdit._id) {
+      if (loadComEdit) {
+        return 'загрузка...';
+      } else {
+        return text;
+      }
+    }
+    return text;
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.about}>
         <div>
-          <h1>Pavel Durov</h1>
+          <h1>{flagArt ? 'Pavel Durov' : name}</h1>
         </div>
         <div>
           <h2>Блог фронтед-разработчик</h2>
@@ -101,58 +130,63 @@ export default function MainPage({ setComment, handleClickLogOut, modalOpen }) {
               )}
             </p>
           </div>
-          {!flagArt && (
-            <div className={styles.wrapper_comment}>
-              <h3>Комментарии ({comments.length}) </h3>
-              {comments.map((item) => {
-                return (
-                  <div className={styles.comments}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <h4>{name[0]}</h4>
-                      <p>
-                        {new Date(item.createdAt).toLocaleString('ru', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          second: 'numeric',
-                        })}
-                      </p>
-                    </div>
-                    <div
-                      style={{ marginTop: 13, display: 'flex', justifyContent: 'space-between' }}
-                    >
-                      <div>{loading ? 'загрузка...' : item.text}</div>
+
+          <div className={styles.wrapper_comment}>
+            <h3>Комментарии ({comments.length}) </h3>
+            {comments.map((item) => {
+              return (
+                <div className={styles.comments}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <h4>{name}</h4>
+                    <p>
+                      {new Date(item.createdAt).toLocaleString('ru', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric',
+                      })}
+                    </p>
+                  </div>
+                  <div style={{ marginTop: 13, display: 'flex', justifyContent: 'space-between' }}>
+                    <div>{loading ? 'загрузка...' : funcLoad(item._id, item.text)}</div>
+                    {token && (
                       <ButtonAnime
                         handleClickEditCom={() => handleClickEditCom(item.post, item._id)}
                         handleClickDelCom={() => handleClickDelCom(item._id)}
                       />
-                    </div>
+                    )}
                   </div>
-                );
-              })}
-              <h4>Добавить комментарий:</h4>
-              <form onSubmit={handleSubmit}>
-                <textarea
-                  className={styles.set_comment}
-                  value={text}
-                  onChange={handleChangetext}
-                  cols="83"
-                  name="text"
-                  rows="7"
-                ></textarea>
-                {setLoadComment ? (
-                  <img src={logo} alt="loader_image" />
-                ) : (
-                  <button type="onSubmit">Отправить</button>
-                )}
-              </form>
-            </div>
-          )}
+                </div>
+              );
+            })}
+            {token && (
+              <>
+                <h4>Добавить комментарий:</h4>
+                <form onSubmit={handleSubmit}>
+                  <textarea
+                    className={flag ? styles.set_comment_small : styles.set_comment}
+                    value={text}
+                    onChange={handleChangetext}
+                    // cols="83"
+                    name="text"
+                    rows="7"
+                  ></textarea>
+                  {setLoadComment ? (
+                    <img src={logo} alt="loader_image" />
+                  ) : isEditComment ? (
+                    <button type="onSubmit">Отправить</button>
+                  ) : (
+                    <button type="onSubmit">Сохранить</button>
+                  )}
+                </form>
+              </>
+            )}
+          </div>
         </div>
       </div>
-      <div className={flag ? styles.black_news_small : styles.block_news}>
+      <div className={flag ? styles.block_news_small : styles.block_news}>
         <div className={styles.input}>
           <h3>Pavel's Blog</h3>
           <Inputs handleClickLogOut={handleClickLogOut} modalOpen={modalOpen} />

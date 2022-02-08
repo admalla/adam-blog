@@ -1,7 +1,6 @@
 const initialState = {
   flag: false,
   isRegistered: true,
-  userToken: null,
   useName: '',
   items: [],
   page: 1,
@@ -25,8 +24,7 @@ export function menuReducer(state = initialState, action) {
     case 'USER':
       return {
         ...state,
-        userToken: action.payload.token,
-        userName: action.payload.userName,
+        userName: action.payload.fullName,
       };
 
     case 'GET_ITEMS':

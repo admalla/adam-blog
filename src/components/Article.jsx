@@ -15,7 +15,7 @@ export function Article({ getAllCommentsArticle, artSelected }) {
   const pageQty = useSelector((state) => state.menu.pageQty);
   const page = useSelector((state) => state.menu.page);
   const searchValue = useSelector((state) => state.article.searchValue);
-  const token = localStorage.getItem('token');
+  const id = localStorage.getItem('id');
   const dispatch = useDispatch();
 
   let navigate = useNavigate();
@@ -24,13 +24,20 @@ export function Article({ getAllCommentsArticle, artSelected }) {
 
   useEffect(() => {
     async function getArticle() {
-      const response = await instance
-        .get(`/posts?query=${searchValue}&page=${page}&limit=3`)
-        .then(({ data }) => data);
-      dispatch(items_User({ items: response.items, total: response.total }));
+      if (window.location.pathname === `/profile/${id}`) {
+        const response = await instance
+          .get(`/posts?${id}&query=${searchValue}&page=${page}&limit=3`)
+          .then(({ data }) => data);
+        dispatch(items_User({ items: response.items, total: response.total }));
+      } else {
+        const response = await instance
+          .get(`/posts?query=${searchValue}&page=${page}&limit=3`)
+          .then(({ data }) => data);
+        dispatch(items_User({ items: response.items, total: response.total }));
+      }
     }
     getArticle();
-  }, [dispatch, page, searchValue]);
+  }, [dispatch, page, searchValue, id]);
 
   const handleClickDel = async (id) => {
     if (window.confirm('Ты уверен, что хочешь удалить пост')) {
@@ -44,15 +51,14 @@ export function Article({ getAllCommentsArticle, artSelected }) {
   };
 
   const handleClickEdit = (id) => {
-    navigate('/auth/addarticle');
+    navigate(`/post/${id}/edit`);
     dispatch(setTitleForEdit(id));
   };
 
   const handleClickSelect = (id) => {
-    if (token) {
-      artSelected(id);
-      getAllCommentsArticle(id);
-    }
+    artSelected(id);
+    navigate(`/post/${id}`);
+    getAllCommentsArticle(id);
   };
 
   const handleChangPage = (num) => {
@@ -70,7 +76,7 @@ export function Article({ getAllCommentsArticle, artSelected }) {
             <div>
               <div className={styles.profile_header_article}>
                 <h3>{item.title}</h3>
-                {window.location.pathname === '/profile' && (
+                {window.location.pathname === `/profile/${id}` && (
                   <span>
                     <EditTwoToneIcon onClick={() => handleClickEdit(item._id)} />
                     <DeleteTwoToneIcon onClick={() => handleClickDel(item._id)} />

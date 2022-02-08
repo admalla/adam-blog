@@ -30,3 +30,23 @@ export const getDelComment = (id) => {
     payload: id,
   };
 };
+
+export const selectComForEdit = (id) => {
+  return {
+    type: 'EDIT_COMMENT',
+    payload: id,
+  };
+};
+
+export const setEditComment = (id, text, postId) => async (dispatch) => {
+  dispatch({
+    type: 'COM_EDIT_START',
+  });
+  await instance.patch(`/comments/${id}`, { text });
+  const { data } = await instance.get(`/comments/post/${postId}`);
+  console.log(data);
+  dispatch({
+    type: 'COM_EDIT_SUCCESS',
+    payload: data,
+  });
+};
