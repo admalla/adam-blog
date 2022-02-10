@@ -14,11 +14,8 @@ import { inputUserValue, modalClose, modalOpen, onToggle } from './redux/Modal/a
 
 function App() {
   const token = localStorage.getItem('token');
-  const items = useSelector((state) => state.menu.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  console.log(items);
 
   const modal_Close = () => {
     dispatch(modalClose());

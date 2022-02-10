@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import '../style/modal.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { instance } from '../config/axios';
 
 export function Modal({ pageUser, onToggle, modalClose, modalValue }) {
   const isOpened = useSelector((state) => state.modal.isOpened);
@@ -26,11 +25,11 @@ export function Modal({ pageUser, onToggle, modalClose, modalValue }) {
     };
 
     if (isRegistered) {
-      await axios.post('http://localhost:5656/auth/register', data).catch('ОШИБКА');
+      await axios.post('/auth/register', data).catch('ОШИБКА');
       onToggle();
     } else {
       await axios
-        .post('http://localhost:5656/auth/login', { email, password })
+        .post('/auth/login', { email, password })
         .then((res) => {
           localStorage.setItem('userName', res.data.fullName);
           localStorage.setItem('token', res.data.token);
@@ -42,7 +41,7 @@ export function Modal({ pageUser, onToggle, modalClose, modalValue }) {
     }
     async function authFunc() {
       await axios
-        .get('http://localhost:5656/auth/me')
+        .get('/auth/me')
         .then((res) => res.data)
         .catch((err) => {
           console.log(err);

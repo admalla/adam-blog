@@ -23,8 +23,6 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
   const isEditComment = useSelector((state) => state.comments.isEditComment);
   const loadComEdit = useSelector((state) => state.comments.loadComEdit);
 
-  console.log(artActiv);
-
   const [text, setText] = useState('');
 
   const dispatch = useDispatch();
@@ -96,7 +94,7 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
               className={styles.photoUser}
               src={
                 artActiv.photoUrl
-                  ? `http://localhost:5656/${artActiv.photoUrl}`
+                  ? `/${artActiv.photoUrl}`
                   : 'https://chto-eto-takoe.ru/uryaimg/32574385521dd1847f7d1e5b940491ef.jpg'
               }
               alt="img"
@@ -156,7 +154,6 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
                     className={flag ? styles.set_comment_small : styles.set_comment}
                     value={text}
                     onChange={handleChangetext}
-                    // cols="83"
                     name="text"
                     rows="7"
                   ></textarea>

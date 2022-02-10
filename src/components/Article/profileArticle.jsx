@@ -18,8 +18,6 @@ export function ProfileArticle({
   const page = useSelector((state) => state.menu.page);
   const currentPerPage = Math.ceil(userPageQty / 3);
 
-  console.log(posts);
-
   return (
     <Container>
       {posts.map((item) => {
@@ -42,7 +40,7 @@ export function ProfileArticle({
                 className={styles.article_image}
                 src={
                   item.photoUrl
-                    ? `http://localhost:5656/${item.photoUrl}`
+                    ? `/${item.photoUrl}`
                     : 'https://chto-eto-takoe.ru/uryaimg/32574385521dd1847f7d1e5b940491ef.jpg'
                 }
                 alt="img"

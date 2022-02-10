@@ -20,7 +20,7 @@ export function Article({ getAllCommentsArticle, artSelected }) {
     async function getArticle() {
       if (window.location.pathname === `/profile/${id}`) {
         const response = await axios
-          .get(`http://localhost:5656/users/${id}?query=${searchValue}&page=${page}&limit=3`)
+          .get(`/users/${id}?query=${searchValue}&page=${page}&limit=3`)
           .then(({ data }) => data);
         dispatch(posts_UserById(response.posts));
       } else {
