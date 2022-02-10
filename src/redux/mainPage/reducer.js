@@ -1,10 +1,12 @@
 const initialState = {
   flag: false,
   isRegistered: true,
-  useName: '',
+  userName: '',
   items: [],
+  userPosts: [],
   page: 1,
   pageQty: 0,
+  userPageQty: 0,
 };
 
 export function menuReducer(state = initialState, action) {
@@ -24,7 +26,14 @@ export function menuReducer(state = initialState, action) {
     case 'USER':
       return {
         ...state,
-        userName: action.payload.fullName,
+        userName: action.payload?.fullName,
+      };
+
+    case 'GET_USER_POSTS':
+      return {
+        ...state,
+        userPosts: action.payload,
+        userPageQty: action.payload.length,
       };
 
     case 'GET_ITEMS':

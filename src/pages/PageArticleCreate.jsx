@@ -1,7 +1,7 @@
 import React from 'react';
 import InputIcon from '@mui/icons-material/Input';
 import styles from '../style/pages/PageArtCreate.module.scss';
-import { Article } from '../components/Article';
+import { Article } from '../components/Article/Article';
 import { useDispatch, useSelector } from 'react-redux';
 import Inputs from '../components/material/SearchUser';
 import SimpleMDE from 'react-simplemde-editor';

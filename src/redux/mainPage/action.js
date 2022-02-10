@@ -17,6 +17,13 @@ export const value_User = (obj) => {
   };
 };
 
+export const posts_UserById = (posts) => {
+  return {
+    type: 'GET_USER_POSTS',
+    payload: posts,
+  };
+};
+
 export const items_User = ({ items, total }) => {
   return {
     type: 'GET_ITEMS',

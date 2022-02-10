@@ -8,7 +8,7 @@ export function EditAndOutIcons({ handleClickLogOut }) {
   const navigate = useNavigate();
 
   const handleClickEditArt = () => {
-    navigate('/auth/addarticle');
+    navigate('/post');
   };
   return (
     <div className={styles.icons}>

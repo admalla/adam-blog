@@ -9,7 +9,9 @@ import { hideBlockComments } from '../redux/creatEditArt/action';
 export function MenuBar({ modalOpen, valueUser }) {
   const flag = useSelector((state) => state.menu.flag);
   const token = localStorage.getItem('token');
+  const id = localStorage.getItem('id');
   const item = useSelector((state) => state.menu.items).find((item) => item.user);
+  const name = localStorage.getItem('userName');
 
   const dispatch = useDispatch();
 
@@ -42,12 +44,12 @@ export function MenuBar({ modalOpen, valueUser }) {
   };
 
   const handleClickProfile = () => {
-    navigate(`/profile/${item.user._id}`);
+    navigate(`/profile/${id}`);
   };
 
   return (
     <div className={flag ? styles.menu_active : styles.menu}>
-      {token && <h2>{item?.user.fullName && item.user.fullName}</h2>}
+      {token && <h2>{name}</h2>}
       {token && (
         <p>
           {item?.createdAt &&

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { MenuBar } from './components/MenuBar';
 import { Modal } from './components/Modal';
+import { instance } from './config/axios';
 import MainPage from './pages/Main';
 import { PageArticleCreate } from './pages/PageArticleCreate';
 import { Profile } from './pages/profile/Profile';
@@ -16,6 +17,8 @@ function App() {
   const items = useSelector((state) => state.menu.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  console.log(items);
 
   const modal_Close = () => {
     dispatch(modalClose());
@@ -45,11 +48,11 @@ function App() {
     dispatch(modalOpen());
   };
 
-  const artSelected = (id) => {
-    const item = items.find((item) => item._id === id);
+  const artSelected = async (id) => {
+    const postChanged = await instance.get(`/posts/${id}`).then((res) => res.data);
     dispatch({
       type: 'SELECTED',
-      payload: item,
+      payload: postChanged,
     });
   };
 
@@ -90,14 +93,19 @@ function App() {
               setComment={setComment}
               modalOpen={modal_Open}
               handleClickLogOut={handleClickLogOut}
-              valueUser={valueUser}
             />
           }
         />
 
         <Route
           path="/profile/:id"
-          element={<Profile handleClickLogOut={handleClickLogOut} valueUser={valueUser} />}
+          element={
+            <Profile
+              artSelected={artSelected}
+              handleClickLogOut={handleClickLogOut}
+              valueUser={valueUser}
+            />
+          }
         />
         <Route
           path="/post"

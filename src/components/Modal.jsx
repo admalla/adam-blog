@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import '../style/modal.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { instance } from '../config/axios';
 
-export function Modal({ valueUser, pageUser, onToggle, modalClose, modalValue }) {
+export function Modal({ pageUser, onToggle, modalClose, modalValue }) {
   const isOpened = useSelector((state) => state.modal.isOpened);
   const isRegistered = useSelector((state) => state.modal.isRegistered);
 
@@ -26,22 +27,30 @@ export function Modal({ valueUser, pageUser, onToggle, modalClose, modalValue })
 
     if (isRegistered) {
       await axios.post('http://localhost:5656/auth/register', data).catch('ОШИБКА');
+      onToggle();
     } else {
       await axios
         .post('http://localhost:5656/auth/login', { email, password })
         .then((res) => {
-          if (res.data.token) {
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('id', res.data._id);
-            valueUser({ token: res.data.token, userName: res.data.fullName });
-            pageUser();
-          }
+          localStorage.setItem('userName', res.data.fullName);
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('id', res.data._id);
         })
         .catch('ОШИБКА');
+      pageUser();
+      modalClose();
     }
-    navigate('/profile');
+    async function authFunc() {
+      await axios
+        .get('http://localhost:5656/auth/me')
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    authFunc();
+    navigate(`/profile/${localStorage.getItem('id')}`);
     e.target.reset();
-    modalClose();
   };
 
   const onChangeValue = (e) => {

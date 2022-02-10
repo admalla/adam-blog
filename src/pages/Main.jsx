@@ -1,6 +1,6 @@
 import Inputs from '../components/material/SearchUser';
 import styles from '../style/pages/main.module.scss';
-import { Article } from '../components/Article';
+import { Article } from '../components/Article/Article';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getAllComments, selectComForEdit, setEditComment } from '../redux/comments/action';
@@ -9,19 +9,13 @@ import { getDelComment } from '../redux/comments/action';
 import { instance } from '../config/axios';
 import { ButtonAnime } from '../components/Animation';
 
-export default function MainPage({
-  valueUser,
-  artSelected,
-  setComment,
-  handleClickLogOut,
-  modalOpen,
-}) {
+export default function MainPage({ artSelected, setComment, handleClickLogOut, modalOpen }) {
   const flag = useSelector((state) => state.menu.flag);
-
+  const userNameCom = useSelector((state) => state.comments.items);
   const artActiv = useSelector((state) => state.article.selected);
   const flagArt = useSelector((state) => state.article.flag);
   const comments = useSelector((state) => state.comments.items);
-  const name = useSelector((state) => state.menu.userName);
+  const name = window.localStorage.getItem('userName');
   const loading = useSelector((state) => state.comments.loading);
   const setLoadComment = useSelector((state) => state.comments.setLoadComment);
   const token = window.localStorage.getItem('token');
@@ -29,23 +23,16 @@ export default function MainPage({
   const isEditComment = useSelector((state) => state.comments.isEditComment);
   const loadComEdit = useSelector((state) => state.comments.loadComEdit);
 
-  console.log(isEditComment);
+  console.log(artActiv);
+
   const [text, setText] = useState('');
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    async function authFunc() {
-      const res = await instance
-        .get('/auth/me')
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-        });
-      valueUser(res);
-    }
-    authFunc();
-  }, [valueUser]);
+  function nameCreateComFunc(id) {
+    const nameCreateCom = userNameCom.filter((item) => item._id === id);
+    return nameCreateCom.map((item) => item.user.fullName);
+  }
 
   const handleChangetext = (e) => {
     setText(e.target.value);
@@ -98,7 +85,7 @@ export default function MainPage({
     <div className={styles.wrapper}>
       <div className={styles.about}>
         <div>
-          <h1>{flagArt ? 'Pavel Durov' : name}</h1>
+          <h1>{name}</h1>
         </div>
         <div>
           <h2>Блог фронтед-разработчик</h2>
@@ -137,7 +124,7 @@ export default function MainPage({
               return (
                 <div className={styles.comments}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <h4>{name}</h4>
+                    <h4>{nameCreateComFunc(item._id)}</h4>
                     <p>
                       {new Date(item.createdAt).toLocaleString('ru', {
                         year: 'numeric',
@@ -188,7 +175,7 @@ export default function MainPage({
       </div>
       <div className={flag ? styles.block_news_small : styles.block_news}>
         <div className={styles.input}>
-          <h3>Pavel's Blog</h3>
+          <h3>{token ? `${name}'s Blog` : ''}</h3>
           <Inputs handleClickLogOut={handleClickLogOut} modalOpen={modalOpen} />
         </div>
         <Article getAllCommentsArticle={getAllCommentsArticle} artSelected={artSelected} />
