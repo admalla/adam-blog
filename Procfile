@@ -1,1 +1,1 @@
-web: node ./blog-api/index.js
+web: node index.js
