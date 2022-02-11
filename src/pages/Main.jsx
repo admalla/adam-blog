@@ -102,7 +102,7 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
           </div>
           <div>
             <h3>{flagArt ? 'Обо мне' : artActiv.title}</h3>
-            <p>
+            <p className={styles.textArt}>
               {flagArt ? (
                 <span>
                   Lorem ipsum cursus at metus diam ultricies lorem donec ligula duis rutrum pharetra

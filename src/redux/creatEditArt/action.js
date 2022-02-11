@@ -27,7 +27,6 @@ export const setTitleForEdit = (id) => async (dispatch) => {
 };
 
 export const hideBlockComments = () => {
-  console.log(123);
   return {
     type: 'HIDE_BLOCK_COM',
   };

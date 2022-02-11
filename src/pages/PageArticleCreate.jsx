@@ -1,5 +1,4 @@
 import React from 'react';
-import InputIcon from '@mui/icons-material/Input';
 import styles from '../style/pages/PageArtCreate.module.scss';
 import { Article } from '../components/Article/Article';
 import { useDispatch, useSelector } from 'react-redux';

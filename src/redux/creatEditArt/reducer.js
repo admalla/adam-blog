@@ -69,7 +69,6 @@ export function reducerArticle(state = initialState, action) {
       };
 
     case 'HIDE_BLOCK_COM':
-      console.log(123);
       return {
         ...state,
         flag: true,

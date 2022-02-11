@@ -19,7 +19,7 @@ export function ProfileArticle({
   const currentPerPage = Math.ceil(userPageQty / 3);
 
   return (
-    <Container>
+    <Container className={styles.container}>
       {posts.map((item) => {
         return (
           <div id={item._id} onClick={() => handleClickSelect(item._id)} className={styles.article}>

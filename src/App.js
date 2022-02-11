@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { MenuBar } from './components/MenuBar';
 import { Modal } from './components/Modal';

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { items_User, posts_UserById, setDeletePost } from '../../redux/mainPage/action';
 import { instance } from '../../config/axios';
 import { useNavigate } from 'react-router-dom';
-import { setTitleForEdit } from '../../redux/creatEditArt/action';
+import { hideBlockComments, setTitleForEdit } from '../../redux/creatEditArt/action';
 import { ProfileArticle } from './profileArticle';
 import { AllUsersArticle } from './allUsersArticle';
 import axios from 'axios';
@@ -37,6 +37,7 @@ export function Article({ getAllCommentsArticle, artSelected }) {
     if (window.confirm('Ты уверен, что хочешь удалить пост')) {
       await instance.delete(`/posts/${id}`);
       dispatch(setDeletePost(id));
+      dispatch(hideBlockComments());
       const response = await instance
         .get(`/posts?query=${searchValue}&page=${page}&limit=3`)
         .then(({ data }) => data);
