@@ -19,6 +19,7 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
   const loading = useSelector((state) => state.comments.loading);
   const setLoadComment = useSelector((state) => state.comments.setLoadComment);
   const token = window.localStorage.getItem('token');
+  const id = window.localStorage.getItem('id');
   const commentForEdit = useSelector((state) => state.comments.comForEdit);
   const isEditComment = useSelector((state) => state.comments.isEditComment);
   const loadComEdit = useSelector((state) => state.comments.loadComEdit);
@@ -79,6 +80,15 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
     return text;
   };
 
+  const showIconOnlyForUserAuth = (user) => {
+    if (token) {
+      if (user === id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.about}>
@@ -94,7 +104,7 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
               className={styles.photoUser}
               src={
                 artActiv.photoUrl
-                  ? `/${artActiv.photoUrl}`
+                  ? `${artActiv.photoUrl}`
                   : 'https://chto-eto-takoe.ru/uryaimg/32574385521dd1847f7d1e5b940491ef.jpg'
               }
               alt="img"
@@ -117,36 +127,39 @@ export default function MainPage({ artSelected, setComment, handleClickLogOut, m
           </div>
 
           <div className={styles.wrapper_comment}>
-            <h3>Комментарии ({comments.length}) </h3>
-            {comments.map((item) => {
-              return (
-                <div className={styles.comments}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <h4>{nameCreateComFunc(item._id)}</h4>
-                    <p>
-                      {new Date(item.createdAt).toLocaleString('ru', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                      })}
-                    </p>
+            {!flagArt && <h3>Комментарии ({comments.length}) </h3>}
+            {!flagArt &&
+              comments.map((item) => {
+                return (
+                  <div className={styles.comments}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h4>{nameCreateComFunc(item._id)}</h4>
+                      <p>
+                        {new Date(item.createdAt).toLocaleString('ru', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                          second: 'numeric',
+                        })}
+                      </p>
+                    </div>
+                    <div
+                      style={{ marginTop: 13, display: 'flex', justifyContent: 'space-between' }}
+                    >
+                      <div>{loading ? 'загрузка...' : funcLoad(item._id, item.text)}</div>
+                      {showIconOnlyForUserAuth(item.user._id) && (
+                        <ButtonAnime
+                          handleClickEditCom={() => handleClickEditCom(item.post, item._id)}
+                          handleClickDelCom={() => handleClickDelCom(item._id)}
+                        />
+                      )}
+                    </div>
                   </div>
-                  <div style={{ marginTop: 13, display: 'flex', justifyContent: 'space-between' }}>
-                    <div>{loading ? 'загрузка...' : funcLoad(item._id, item.text)}</div>
-                    {token && (
-                      <ButtonAnime
-                        handleClickEditCom={() => handleClickEditCom(item.post, item._id)}
-                        handleClickDelCom={() => handleClickDelCom(item._id)}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-            {token && (
+                );
+              })}
+            {token && !flagArt && (
               <>
                 <h4>Добавить комментарий:</h4>
                 <form onSubmit={handleSubmit}>

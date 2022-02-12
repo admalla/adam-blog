@@ -41,10 +41,12 @@ export function MenuBar({ modalOpen, valueUser }) {
     {
       token ? navigate('/post') : navigate('/');
     }
+    dispatch(hideBlockComments());
   };
 
   const handleClickProfile = () => {
     navigate(`/profile/${id}`);
+    dispatch(hideBlockComments());
   };
 
   return (

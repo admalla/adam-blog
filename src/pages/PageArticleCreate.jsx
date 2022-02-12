@@ -92,7 +92,12 @@ export function PageArticleCreate({ artSelected, handleClickLogOut, modalOpen, v
           ></textarea>
           <h4>Ссылка на изображение</h4>
           <span>
-            <input name="photoUrl" onChange={handleChangeForArticle} type="file" />
+            <input
+              accept="image/png, image/jpeg"
+              name="photoUrl"
+              onChange={handleChangeForArticle}
+              type="file"
+            />
           </span>
           <SimpleMDE value={isPostEdit ? 'Загрузка...' : text} onChange={handleChange} />
           {sendPostEdited ? (

@@ -11,16 +11,16 @@ import axios from 'axios';
 export function Article({ getAllCommentsArticle, artSelected }) {
   const page = useSelector((state) => state.menu.page);
   const searchValue = useSelector((state) => state.article.searchValue);
-  const id = localStorage.getItem('id');
+  const userId = localStorage.getItem('id');
   const dispatch = useDispatch();
 
   let navigate = useNavigate();
 
   useEffect(() => {
     async function getArticle() {
-      if (window.location.pathname === `/profile/${id}`) {
+      if (window.location.pathname === `/profile/${userId}`) {
         const response = await axios
-          .get(`/users/${id}?query=${searchValue}&page=${page}&limit=3`)
+          .get(`/users/${userId}?query=${searchValue}&page=${page}&limit=3`)
           .then(({ data }) => data);
         dispatch(posts_UserById(response.posts));
       } else {
@@ -31,29 +31,32 @@ export function Article({ getAllCommentsArticle, artSelected }) {
       }
     }
     getArticle();
-  }, [dispatch, page, searchValue, id]);
+  }, [dispatch, page, searchValue, userId]);
 
   const handleClickDel = async (id) => {
     if (window.confirm('Ты уверен, что хочешь удалить пост')) {
       await instance.delete(`/posts/${id}`);
       dispatch(setDeletePost(id));
       dispatch(hideBlockComments());
-      const response = await instance
-        .get(`/posts?query=${searchValue}&page=${page}&limit=3`)
+      const response = await axios
+        .get(`/users/${userId}?query=${searchValue}&page=${page}&limit=3`)
         .then(({ data }) => data);
-      dispatch(items_User({ items: response.items, total: response.total }));
+      dispatch(posts_UserById(response.posts));
     }
   };
 
   const handleClickEdit = (id) => {
-    navigate(`/post/${id}/edit`);
-    dispatch(setTitleForEdit(id));
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#edit')) {
+        navigate(`/post/${id}/edit`);
+        dispatch(setTitleForEdit(id));
+      }
+    });
   };
 
-  const handleClickSelect = (id) => {
-    try {
+  const handleClickSelect = (id, e) => {
+    if (e.target.tagName !== 'path') {
       navigate(`/post/${id}`);
-    } finally {
       artSelected(id);
       getAllCommentsArticle(id);
     }
@@ -68,7 +71,7 @@ export function Article({ getAllCommentsArticle, artSelected }) {
 
   return (
     <>
-      {window.location.pathname === `/profile/${id}` ? (
+      {window.location.pathname === `/profile/${userId}` ? (
         <ProfileArticle
           handleChangPage={handleChangPage}
           handleClickSelect={handleClickSelect}

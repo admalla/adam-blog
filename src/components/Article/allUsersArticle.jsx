@@ -23,7 +23,11 @@ export function AllUsersArticle({
     <Container>
       {items.map((item) => {
         return (
-          <div id={item._id} onClick={() => handleClickSelect(item._id)} className={styles.article}>
+          <div
+            id={item._id}
+            onClick={(e) => handleClickSelect(item._id, e)}
+            className={styles.article}
+          >
             <div>
               <div className={styles.profile_header_article}>
                 <h3>{item.title}</h3>
@@ -41,7 +45,7 @@ export function AllUsersArticle({
                 className={styles.article_image}
                 src={
                   item.photoUrl
-                    ? `/${item.photoUrl}`
+                    ? `${item.photoUrl}`
                     : 'https://chto-eto-takoe.ru/uryaimg/32574385521dd1847f7d1e5b940491ef.jpg'
                 }
                 alt="img"
